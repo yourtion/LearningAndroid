@@ -46,5 +46,5 @@
         android:layout_gravity="bottom|right"
         android:contentDescription="@string/next_button"
         android:src="@mipmap/arrow_right"/>
-    
+
 </FrameLayout>
