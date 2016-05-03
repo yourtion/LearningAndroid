@@ -15,7 +15,10 @@ public class CheatActivity extends Activity {
     public static final String EXTRA_ANSWER_IS_TRUE = "com.yourtion.geoquiz.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "com.yourtion.geoquiz.geoquiz.answer_shown";
 
+    private static final String KEY_CHEAT = "cheat";
+
     private boolean mAnswerIsTrue;
+    private boolean mIsCheater = false;
 
     private TextView mAnswerTextView;
     private Button mShowAnswer;
@@ -32,8 +35,6 @@ public class CheatActivity extends Activity {
 
         setContentView(R.layout.activity_cheat);
 
-        setAnswerShownResult(false);
-
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         mAnswerTextView = (TextView) findViewById(R.id.answerTextView);
@@ -47,8 +48,21 @@ public class CheatActivity extends Activity {
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
-                setAnswerShownResult(true);
+                mIsCheater = true;
+                setAnswerShownResult(mIsCheater);
             }
         });
+
+        if (savedInstanceState != null) {
+            mIsCheater = savedInstanceState.getBoolean(KEY_CHEAT, false);
+        }
+
+        setAnswerShownResult(mIsCheater);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(KEY_CHEAT, mIsCheater);
     }
 }
