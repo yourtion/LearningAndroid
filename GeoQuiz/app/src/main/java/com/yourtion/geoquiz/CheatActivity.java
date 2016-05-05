@@ -35,6 +35,10 @@ public class CheatActivity extends Activity {
 
         setContentView(R.layout.activity_cheat);
 
+        TextView APITextView = (TextView) findViewById(R.id.api_text_view);
+        int level =  android.os.Build.VERSION.SDK_INT;
+        APITextView.setText("API Level " + level);
+
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         mAnswerTextView = (TextView) findViewById(R.id.answerTextView);
