@@ -1,9 +1,9 @@
 package com.yourtion.criminalintent;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
-public class CrimeActivity extends AppCompatActivity {
+public class CrimeActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
