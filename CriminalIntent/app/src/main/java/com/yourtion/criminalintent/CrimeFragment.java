@@ -1,5 +1,6 @@
 package com.yourtion.criminalintent;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -84,5 +85,9 @@ public class CrimeFragment extends Fragment {
         });
 
         return v;
+    }
+
+    public void returnResult() {
+        getActivity().setResult(Activity.RESULT_OK, null);
     }
 }
