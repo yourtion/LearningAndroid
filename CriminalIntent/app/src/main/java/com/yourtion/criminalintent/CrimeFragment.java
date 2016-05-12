@@ -17,7 +17,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -47,9 +49,9 @@ public class CrimeFragment extends Fragment {
     }
 
     public void updateDate() {
-//        SimpleDateFormat dtf = new SimpleDateFormat("cccc,MMM d,yyyy", Locale.US);
-//        String dateString = dtf.format(mCrime.getDate());
-        mDateButton.setText(mCrime.getDate().toString());
+        SimpleDateFormat dtf = new SimpleDateFormat("yyyy-mm-dd HH:mm", Locale.US);
+        String dateString = dtf.format(mCrime.getDate());
+        mDateButton.setText(dateString);
     }
 
     @Override
@@ -69,7 +71,6 @@ public class CrimeFragment extends Fragment {
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // This space intentionally left blank
             }
 
             @Override
@@ -79,7 +80,6 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // This space intentionally left blank
             }
         });
 

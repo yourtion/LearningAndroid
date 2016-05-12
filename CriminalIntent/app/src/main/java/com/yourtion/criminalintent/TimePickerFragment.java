@@ -43,7 +43,7 @@ public class TimePickerFragment extends DialogFragment {
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hour = calendar.get(Calendar.HOUR);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
         View v = getActivity().getLayoutInflater().inflate(R.layout.dialog_time, null);
