@@ -3,6 +3,7 @@ package com.yourtion.criminalintent;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,9 +50,16 @@ public class CrimeListFragment extends ListFragment {
                 Crime crime = new Crime();
 
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent i = new Intent(getActivity(),CrimeListActivity.class);
+                Intent i = new Intent(getActivity(), CrimeListActivity.class);
                 i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
                 startActivityForResult(i, 0);
+                return true;
+            case R.id.menu_item_show_subtitle:
+                AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+                android.support.v7.app.ActionBar ab = appCompatActivity.getSupportActionBar();
+                if (ab != null) {
+                    ab.setSubtitle(R.string.subtitle);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
