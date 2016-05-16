@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HelloMoon</string>
+    <string name="hellomoon_play">播放</string>
+    <string name="hellomoon_stop">停止</string>
+    <string name="hellomoon_pause">暂停</string>
+    <string name="hellomoon_description">阿姆斯特朗地球上的一小步</string>
+</resources>
