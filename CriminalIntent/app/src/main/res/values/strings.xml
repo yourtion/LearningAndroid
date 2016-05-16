@@ -11,4 +11,9 @@
     <string name="datetime_picker_title">Edit Date or Time ?</string>
     <string name="datetime_picker_date">Date</string>
     <string name="datetime_picker_time">Time</string>
+    <string name="new_crime">New Crime</string>
+    <string name="show_subtitle">Show Subtitle</string>
+    <string name="hide_subtitle">Hide Subtitle</string>
+    <string name="subtitle">If you see something, say something.</string>
+    <string name="delete_crime">Delete</string>
 </resources>
