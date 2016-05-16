@@ -4,6 +4,7 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,11 +25,14 @@ public class CrimeListFragment extends ListFragment {
     private static final int REQUEST_CRIME = 1;
 
     private ArrayList<Crime> mCrimes;
+    private boolean mSubtitleVisible;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
+        mSubtitleVisible = false;
 
         getActivity().setTitle(R.string.crimes_title);
         mCrimes = CrimeLab.get(getActivity()).getCrimes();
@@ -38,9 +42,28 @@ public class CrimeListFragment extends ListFragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+
+        if (mSubtitleVisible) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            android.support.v7.app.ActionBar ab = appCompatActivity.getSupportActionBar();
+            if (ab != null) {
+                ab.setSubtitle(R.string.subtitle);
+            }
+        }
+
+        return v;
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list, menu);
+        MenuItem showSubtitle = menu.findItem(R.id.menu_item_show_subtitle);
+        if (mSubtitleVisible && showSubtitle != null) {
+            showSubtitle.setTitle(R.string.hide_subtitle);
+        }
     }
 
     @Override
@@ -58,8 +81,15 @@ public class CrimeListFragment extends ListFragment {
                 AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
                 android.support.v7.app.ActionBar ab = appCompatActivity.getSupportActionBar();
                 if (ab != null) {
-                    ab.setSubtitle(R.string.subtitle);
+                    if (ab.getSubtitle() == null) {
+                        ab.setSubtitle(R.string.subtitle);
+                        mSubtitleVisible = true;
+                    } else {
+                        ab.setSubtitle(null);
+                        mSubtitleVisible = false;
+                    }
                 }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
