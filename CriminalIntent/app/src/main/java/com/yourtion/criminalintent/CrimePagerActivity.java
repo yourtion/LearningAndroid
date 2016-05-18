@@ -1,11 +1,12 @@
 package com.yourtion.criminalintent;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -13,7 +14,7 @@ import java.util.UUID;
 /**
  * Created by Yourtion on 5/12/16.
  */
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends Activity {
     private ViewPager mViewPager;
     private ArrayList<Crime> mCrimes;
 
@@ -49,7 +50,7 @@ public class CrimePagerActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 Crime crime = mCrimes.get(position);
-                android.support.v7.app.ActionBar ab = getSupportActionBar();
+                ActionBar ab = getActionBar();
                 if (crime.getTitle() != null && ab != null) {
                     ab.setTitle(crime.getTitle());
                 }

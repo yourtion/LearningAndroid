@@ -1,9 +1,9 @@
 package com.yourtion.criminalintent;
 
+import android.app.ActionBar;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -69,8 +69,7 @@ public class CrimeListFragment extends ListFragment {
         registerForContextMenu(listView);
 
         if (mSubtitleVisible) {
-            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-            android.support.v7.app.ActionBar ab = appCompatActivity.getSupportActionBar();
+            ActionBar ab = getActivity().getActionBar();
             if (ab != null) {
                 ab.setSubtitle(R.string.subtitle);
             }
@@ -96,8 +95,7 @@ public class CrimeListFragment extends ListFragment {
                 createCrime();
                 return true;
             case R.id.menu_item_show_subtitle:
-                AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
-                android.support.v7.app.ActionBar ab = appCompatActivity.getSupportActionBar();
+                ActionBar ab = getActivity().getActionBar();
                 if (ab != null) {
                     if (ab.getSubtitle() == null) {
                         ab.setSubtitle(R.string.subtitle);
