@@ -1,7 +1,9 @@
 package com.yourtion.criminalintent;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
@@ -23,8 +25,8 @@ import java.util.UUID;
  * Created by Yourtion on 5/19/16.
  */
 public class CrimeCameraFragment extends Fragment {
+    public static final String EXTRA_PHOTO_FILENAME = "com.yourtion.criminalintent.photo_filename";
     private static final String TAG = "CrimeCameraFragment";
-
     private Camera mCamera;
     private SurfaceView mSurfaceView;
     private View mProgressContainer;
@@ -58,8 +60,13 @@ public class CrimeCameraFragment extends Fragment {
                     success = false;
                 }
             }
+            // Set the photo filename on the result intent
             if (success) {
-                Log.i(TAG, "JPEG saved at " + filename);
+                Intent i = new Intent();
+                i.putExtra(EXTRA_PHOTO_FILENAME, filename);
+                getActivity().setResult(Activity.RESULT_OK, i);
+            } else {
+                getActivity().setResult(Activity.RESULT_CANCELED);
             }
             getActivity().finish();
         }

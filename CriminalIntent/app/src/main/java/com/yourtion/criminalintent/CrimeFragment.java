@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,12 +35,14 @@ import java.util.UUID;
  */
 public class CrimeFragment extends Fragment {
     public static final String EXTRA_CRIME_ID = "com.yourtion.criminalintent.crime_id";
+    private static final String TAG = "CrimeFragment";
     private static final String DIALOG_DATE = "date";
     private static final String DIALOG_TIME = "time";
     private static final String DIALOG_CHOOSE = "choose";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_CHOOSE = 2;
+    private static final int REQUEST_PHOTO = 3;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -125,7 +128,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), CrimeCameraActivity.class);
-                startActivity(i);
+                startActivityForResult(i, REQUEST_PHOTO);
             }
         });
 
@@ -178,13 +181,11 @@ public class CrimeFragment extends Fragment {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateDate();
-        }
-        if (requestCode == REQUEST_TIME) {
+        } else if (requestCode == REQUEST_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
             mCrime.setDate(date);
             updateDate();
-        }
-        if (requestCode == REQUEST_CHOOSE) {
+        } else if (requestCode == REQUEST_CHOOSE) {
             String choose = data.getStringExtra(ChoosePickerFragment.EXTRA_CHOISE);
             FragmentManager fm = getActivity().getFragmentManager();
             if (choose.equals(ChoosePickerFragment.EXTRA_CHOISE_DATE)) {
@@ -196,6 +197,12 @@ public class CrimeFragment extends Fragment {
                 DialogFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
                 dialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
                 dialog.show(fm, DIALOG_TIME);
+            }
+        } else if (requestCode == REQUEST_PHOTO) {
+            // Create a new Photo object and attach it to the crime
+            String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
+            if (filename != null) {
+                Log.i(TAG, "filename: " + filename);
             }
         }
     }
