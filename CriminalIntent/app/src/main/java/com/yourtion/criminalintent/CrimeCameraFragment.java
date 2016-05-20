@@ -24,6 +24,7 @@ import java.util.UUID;
 /**
  * Created by Yourtion on 5/19/16.
  */
+@SuppressWarnings("deprecation")
 public class CrimeCameraFragment extends Fragment {
     public static final String EXTRA_PHOTO_FILENAME = "com.yourtion.criminalintent.photo_filename";
     private static final String TAG = "CrimeCameraFragment";
