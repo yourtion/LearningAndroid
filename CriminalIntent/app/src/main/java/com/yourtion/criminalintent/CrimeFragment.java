@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -147,6 +148,14 @@ public class CrimeFragment extends Fragment {
                 ImageFragment.newInstance(path, p.getRotate()).show(fm, DIALOG_IMAGE);
             }
         });
+        mPhotoView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                getActivity().openContextMenu(v);
+                return true;
+            }
+        });
+        registerForContextMenu(mPhotoView);
 
         // If camera is not available, disable camera functionality
         PackageManager pm = getActivity().getPackageManager();
@@ -172,6 +181,9 @@ public class CrimeFragment extends Fragment {
                 }
                 return true;
             case R.id.menu_item_delete_crime:
+                if (mCrime.getPhoto() != null) {
+                    getActivity().deleteFile(mCrime.getPhoto().getFilename());
+                }
                 CrimeLab.get(getActivity()).deleteCrime(mCrime);
                 if (NavUtils.getParentActivityName(getActivity()) != null) {
                     NavUtils.navigateUpFromSameTask(getActivity());
@@ -181,6 +193,20 @@ public class CrimeFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (mCrime.getPhoto() != null) {
+            getActivity().getMenuInflater().inflate(R.menu.crime_delete_photo, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        getActivity().deleteFile(mCrime.getPhoto().getFilename());
+        mCrime.setPhoto(null);
+        PictureUtils.cleanImageView(mPhotoView);
+        return super.onContextItemSelected(item);
     }
 
     @Override
@@ -227,6 +253,9 @@ public class CrimeFragment extends Fragment {
             }
         } else if (requestCode == REQUEST_PHOTO) {
             // Create a new Photo object and attach it to the crime
+            if (mCrime.getPhoto() != null) {
+                getActivity().deleteFile(mCrime.getPhoto().getFilename());
+            }
             String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
             if (filename != null) {
                 int rotate = data.getIntExtra(CrimeCameraFragment.EXTRA_PHOTO_ROTATE, 0);

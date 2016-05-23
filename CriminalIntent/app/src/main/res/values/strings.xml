@@ -18,4 +18,5 @@
     <string name="add_crime_tips">Nothing yet,click and add a crime now!</string>
     <string name="delete_crime">Delete</string>
     <string name="take">Take!</string>
+    <string name="delete_photo">Delete Photo</string>
 </resources>
