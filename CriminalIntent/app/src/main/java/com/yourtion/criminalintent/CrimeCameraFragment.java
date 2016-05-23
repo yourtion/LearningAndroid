@@ -27,11 +27,12 @@ import java.util.UUID;
 @SuppressWarnings("deprecation")
 public class CrimeCameraFragment extends Fragment {
     public static final String EXTRA_PHOTO_FILENAME = "com.yourtion.criminalintent.photo_filename";
+    public static final String EXTRA_PHOTO_ROTATE = "com.yourtion.criminalintent.photo_rotate";
     private static final String TAG = "CrimeCameraFragment";
+    static Accelerometer acc;
     private Camera mCamera;
     private SurfaceView mSurfaceView;
     private View mProgressContainer;
-
     private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
         @Override
         public void onShutter() {
@@ -65,6 +66,7 @@ public class CrimeCameraFragment extends Fragment {
             if (success) {
                 Intent i = new Intent();
                 i.putExtra(EXTRA_PHOTO_FILENAME, filename);
+                i.putExtra(EXTRA_PHOTO_ROTATE, Accelerometer.getDirection());
                 getActivity().setResult(Activity.RESULT_OK, i);
             } else {
                 getActivity().setResult(Activity.RESULT_CANCELED);
@@ -132,7 +134,7 @@ public class CrimeCameraFragment extends Fragment {
                 // The surface has changed size; update the camera preview size
                 Camera.Parameters parameters = mCamera.getParameters();
                 Size s = getBestSupportedSize(parameters.getSupportedPictureSizes(), width, height);
-                parameters.setPreviewSize(640, 480);
+                parameters.setPreviewSize(s.width, s.height);
                 s = getBestSupportedSize(parameters.getSupportedPictureSizes(), width, height);
                 parameters.setPictureSize(s.width, s.height);
                 mCamera.setParameters(parameters);
@@ -157,16 +159,24 @@ public class CrimeCameraFragment extends Fragment {
         return v;
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
         mCamera = Camera.open(0);
+        if (acc == null) {
+            acc = new Accelerometer(getActivity());
+        }
+        acc.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
+        if (acc != null) {
+            acc.stop();
+            acc = null;
+        }
         if (mCamera != null) {
             mCamera.release();
             mCamera = null;

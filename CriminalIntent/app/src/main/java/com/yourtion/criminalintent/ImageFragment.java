@@ -14,11 +14,13 @@ import android.widget.ImageView;
  */
 public class ImageFragment extends DialogFragment {
     public static final String EXTRA_IMAGE_PATH = "com.yourion.criminalintent.image_path";
+    public static final String EXTRA_IMAGE_ROTATE = "com.yourion.criminalintent.image_rotate";
     private ImageView mImageView;
 
-    public static ImageFragment newInstance(String imagePath) {
+    public static ImageFragment newInstance(String imagePath, int rorate) {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_IMAGE_PATH, imagePath);
+        args.putInt(EXTRA_IMAGE_ROTATE, rorate);
 
         ImageFragment fragment = new ImageFragment();
         fragment.setArguments(args);
@@ -32,7 +34,8 @@ public class ImageFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mImageView = new ImageView(getActivity());
         String path = (String) getArguments().getSerializable(EXTRA_IMAGE_PATH);
-        BitmapDrawable image = PictureUtils.getScaledDrawable(getActivity(), path);
+        int rorate = getArguments().getInt(EXTRA_IMAGE_ROTATE, 0);
+        BitmapDrawable image = PictureUtils.getScaledDrawable(getActivity(), path, rorate);
         mImageView.setImageDrawable(image);
         return mImageView;
     }

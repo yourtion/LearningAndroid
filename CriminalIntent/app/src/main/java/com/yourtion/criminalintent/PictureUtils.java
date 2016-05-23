@@ -3,6 +3,7 @@ package com.yourtion.criminalintent;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Display;
 import android.widget.ImageView;
@@ -17,7 +18,7 @@ public class PictureUtils {
      */
 
     @SuppressWarnings("deprecation")
-    public static BitmapDrawable getScaledDrawable(Activity a, String path) {
+    public static BitmapDrawable getScaledDrawable(Activity a, String path, int rorate) {
         Display display = a.getWindowManager().getDefaultDisplay();
         float destWidth = display.getWidth();
         float destHeight = display.getHeight();
@@ -43,7 +44,20 @@ public class PictureUtils {
         options.inSampleSize = inSampleSize;
 
         Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+
+        if (rorate != 0) {
+            bitmap = applyRotate(bitmap, rorate);
+        }
+
         return new BitmapDrawable(a.getResources(), bitmap);
+    }
+
+    public static Bitmap applyRotate(Bitmap bitmap, int rotate) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        Matrix mtx = new Matrix();
+        mtx.postRotate(rotate);
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
     }
 
     public static void cleanImageView(ImageView imageView) {
