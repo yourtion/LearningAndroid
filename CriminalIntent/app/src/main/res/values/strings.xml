@@ -19,4 +19,6 @@
     <string name="delete_crime">Delete</string>
     <string name="take">Take!</string>
     <string name="delete_photo">Delete Photo</string>
+    <string name="crime_suspect_text">Choose Suspect</string>
+    <string name="crime_report_text">Send Crime Report</string>
 </resources>
