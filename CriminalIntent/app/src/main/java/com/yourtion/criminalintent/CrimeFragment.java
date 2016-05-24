@@ -163,11 +163,11 @@ public class CrimeFragment extends Fragment {
         registerForContextMenu(mPhotoView);
 
         mSuspectButton = (Button) v.findViewById(R.id.crime_suspectButton);
+        final Intent iSuspect = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(i, REQUEST_CONTACT);
+                startActivityForResult(iSuspect, REQUEST_CONTACT);
             }
         });
         if (mCrime.getSuspect() != null) {
@@ -175,14 +175,14 @@ public class CrimeFragment extends Fragment {
         }
 
         Button reportButton = (Button) v.findViewById(R.id.crime_reportButton);
+        final  Intent iReport = new Intent(Intent.ACTION_SEND);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
-                i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
-                i = Intent.createChooser(i, getString(R.string.send_report));
+                iReport.setType("text/plain");
+                iReport.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+                iReport.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
+                Intent i= Intent.createChooser(iReport, getString(R.string.send_report));
                 startActivity(i);
             }
         });
@@ -191,6 +191,12 @@ public class CrimeFragment extends Fragment {
         PackageManager pm = getActivity().getPackageManager();
         if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA) && !pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
             mPhotoButton.setEnabled(false);
+        }
+        if (pm.queryIntentActivities(iSuspect, 0).size() < 0) {
+            mSuspectButton.setEnabled(false);
+        }
+        if (pm.queryIntentActivities(iReport, 0).size() < 0) {
+            reportButton.setEnabled(false);
         }
 
         return v;
