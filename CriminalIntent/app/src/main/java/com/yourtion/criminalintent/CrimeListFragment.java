@@ -1,6 +1,7 @@
 package com.yourtion.criminalintent;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,14 +30,30 @@ public class CrimeListFragment extends ListFragment {
 
     private ArrayList<Crime> mCrimes;
     private boolean mSubtitleVisible;
+    private Callbacks mCallbacks;
+
+    public void updateUI() {
+        ((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mCallbacks = null;
+    }
 
     private void createCrime() {
         Crime crime = new Crime();
 
         CrimeLab.get(getActivity()).addCrime(crime);
-        Intent i = new Intent(getActivity(), CrimePagerActivity.class);
-        i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getId());
-        startActivityForResult(i, 0);
+        ((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
+        mCallbacks.onCrimeSelected(crime);
     }
 
     @Override
@@ -170,11 +187,7 @@ public class CrimeListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Get the Crime from the adapter
         Crime c = ((CrimeAdapter) getListAdapter()).getItem(position);
-
-        // Start CrimeActivity
-        Intent i = new Intent(getActivity(), CrimePagerActivity.class);
-        i.putExtra(CrimeFragment.EXTRA_CRIME_ID, c.getId());
-        startActivityForResult(i, REQUEST_CRIME);
+        mCallbacks.onCrimeSelected(c);
     }
 
     @Override
@@ -182,6 +195,10 @@ public class CrimeListFragment extends ListFragment {
         if (requestCode == REQUEST_CRIME) {
             // Handle result
         }
+    }
+
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
     }
 
     private class CrimeAdapter extends ArrayAdapter<Crime> {

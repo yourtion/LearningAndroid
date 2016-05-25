@@ -61,6 +61,8 @@ public class CrimeFragment extends Fragment {
     private ImageView mPhotoView;
     private Button mSuspectButton;
 
+    private Callbacks mCallbacks;
+
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_CRIME_ID, crimeId);
@@ -68,6 +70,18 @@ public class CrimeFragment extends Fragment {
         CrimeFragment fragment = new CrimeFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     public void updateDate() {
@@ -104,6 +118,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                mCallbacks.onCrimeUpdated(mCrime);
             }
 
             @Override
@@ -130,6 +145,7 @@ public class CrimeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Set the crime's solved property
                 mCrime.setSolved(isChecked);
+                mCallbacks.onCrimeUpdated(mCrime);
             }
         });
 
@@ -234,6 +250,7 @@ public class CrimeFragment extends Fragment {
                 if (NavUtils.getParentActivityName(getActivity()) != null) {
                     NavUtils.navigateUpFromSameTask(getActivity());
                 }
+                mCallbacks.onCrimeUpdated(null);
                 return true;
 
             default:
@@ -279,6 +296,7 @@ public class CrimeFragment extends Fragment {
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
+            mCallbacks.onCrimeUpdated(mCrime);
             updateDate();
         } else if (requestCode == REQUEST_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
@@ -307,6 +325,7 @@ public class CrimeFragment extends Fragment {
                 int rotate = data.getIntExtra(CrimeCameraFragment.EXTRA_PHOTO_ROTATE, 0);
                 Photo p = new Photo(filename, rotate);
                 mCrime.setPhoto(p);
+                mCallbacks.onCrimeUpdated(mCrime);
                 showPhoto();
             }
         } else if (requestCode == REQUEST_CONTACT) {
@@ -321,12 +340,13 @@ public class CrimeFragment extends Fragment {
             if (c != null && c.moveToFirst()) {
                 String suspect = c.getString(0);
                 mCrime.setSuspect(suspect);
+                mCallbacks.onCrimeUpdated(mCrime);
                 mSuspectButton.setText(suspect);
             }
             if (c != null) c.close();
         } else if (requestCode == REQUEST_CALL) {
             Uri contactUri = data.getData();
-            
+
             Cursor c = getActivity().getContentResolver().query(contactUri, null, null, null, null);
             if (c != null && c.moveToFirst()) {
                 int contactId = c.getInt(c.getColumnIndex(ContactsContract.Contacts._ID));
@@ -381,5 +401,9 @@ public class CrimeFragment extends Fragment {
 
         String report = getString(R.string.crime_report, mCrime.getTitle(), dateString, solvedString, suspect);
         return report;
+    }
+
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
     }
 }
