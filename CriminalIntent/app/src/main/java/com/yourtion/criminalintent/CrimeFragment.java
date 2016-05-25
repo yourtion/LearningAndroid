@@ -51,6 +51,7 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_CHOOSE = 2;
     private static final int REQUEST_PHOTO = 3;
     private static final int REQUEST_CONTACT = 4;
+    private static final int REQUEST_CALL = 5;
 
     private Crime mCrime;
     private EditText mTitleField;
@@ -175,15 +176,23 @@ public class CrimeFragment extends Fragment {
         }
 
         Button reportButton = (Button) v.findViewById(R.id.crime_reportButton);
-        final  Intent iReport = new Intent(Intent.ACTION_SEND);
+        final Intent iReport = new Intent(Intent.ACTION_SEND);
         reportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 iReport.setType("text/plain");
                 iReport.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
                 iReport.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
-                Intent i= Intent.createChooser(iReport, getString(R.string.send_report));
+                Intent i = Intent.createChooser(iReport, getString(R.string.send_report));
                 startActivity(i);
+            }
+        });
+
+        Button callButton = (Button) v.findViewById(R.id.crime_callButton);
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(iSuspect, REQUEST_CALL);
             }
         });
 
@@ -197,6 +206,7 @@ public class CrimeFragment extends Fragment {
         }
         if (pm.queryIntentActivities(iReport, 0).size() < 0) {
             reportButton.setEnabled(false);
+            callButton.setEnabled(false);
         }
 
         return v;
@@ -302,22 +312,37 @@ public class CrimeFragment extends Fragment {
         } else if (requestCode == REQUEST_CONTACT) {
             Uri contactUri = data.getData();
 
-            // Specify which fields you want your query to return values for.
+
             String[] queryField = new String[]{ContactsContract.Contacts.DISPLAY_NAME};
-            // Perform your query - the contactUri is like a "where" clause here
+
             Cursor c = getActivity().getContentResolver()
                     .query(contactUri, queryField, null, null, null);
-            // Double-check that you actually got results
-            if (c.getCount() == 0) {
-                c.close();
-                return;
+
+            if (c != null && c.moveToFirst()) {
+                String suspect = c.getString(0);
+                mCrime.setSuspect(suspect);
+                mSuspectButton.setText(suspect);
             }
-            // Pull out the first column of the first row of data that is your suspect's name.
-            c.moveToFirst();
-            String suspect = c.getString(0);
-            mCrime.setSuspect(suspect);
-            mSuspectButton.setText(suspect);
-            c.close();
+            if (c != null) c.close();
+        } else if (requestCode == REQUEST_CALL) {
+            Uri contactUri = data.getData();
+            
+            Cursor c = getActivity().getContentResolver().query(contactUri, null, null, null, null);
+            if (c != null && c.moveToFirst()) {
+                int contactId = c.getInt(c.getColumnIndex(ContactsContract.Contacts._ID));
+                Uri phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+                Cursor phones = getActivity().getContentResolver()
+                        .query(phoneUri, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + contactId, null, null);
+
+                if (phones != null && phones.moveToFirst()) {
+                    String numPhone = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    Uri number = Uri.parse("tel:" + numPhone);
+                    Intent i = new Intent(Intent.ACTION_DIAL, number);
+                    startActivity(i);
+                }
+                if (phones != null) phones.close();
+            }
+            if (c != null) c.close();
         }
     }
 
