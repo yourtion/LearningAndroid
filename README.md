@@ -2,7 +2,7 @@
 
 基于《Android编程权威指南》第一版 学习 Android 的记录。
 
-**使用 AndroidStudio 及 Android 4.0 进行**
+**使用 AndroidStudio 及 Android 4.0 进行** 最低支持 Android 4.0 根据新特性做了相应修改
 
 ## GeoQuiz
 
