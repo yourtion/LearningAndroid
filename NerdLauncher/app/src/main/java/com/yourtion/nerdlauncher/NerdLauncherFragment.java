@@ -2,6 +2,7 @@ package com.yourtion.nerdlauncher;
 
 import android.app.ListFragment;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -44,13 +46,12 @@ public class NerdLauncherFragment extends ListFragment {
         ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(
                 getActivity(),
                 android.R.layout.simple_list_item_1,
-                activities)
-        {
+                activities) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View v = super.getView(position, convertView, parent);
                 // Documentation says that simple_list_item_1 is a TextView so cast it so that you can set its text value
-                TextView tv = (TextView)v;
+                TextView tv = (TextView) v;
                 ResolveInfo ri = getItem(position);
                 tv.setText(ri.loadLabel(pm));
                 return v;
@@ -58,6 +59,17 @@ public class NerdLauncherFragment extends ListFragment {
             }
         };
         setListAdapter(adapter);
+    }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        ResolveInfo resolveInfo = (ResolveInfo) l.getAdapter().getItem(position);
+        ActivityInfo activityInfo = resolveInfo.activityInfo;
+
+        if (activityInfo == null) return;
+
+        Intent i = new Intent(Intent.ACTION_MAIN);
+        i.setClassName(activityInfo.applicationInfo.packageName, activityInfo.name);
+        startActivity(i);
     }
 }
