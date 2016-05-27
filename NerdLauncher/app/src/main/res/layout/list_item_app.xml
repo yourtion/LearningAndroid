@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/app_list_item_iconImageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="4dp"
+        android:cropToPadding="true"
+        android:gravity="center"
+        android:scaleType="centerInside"/>
+
+    <TextView
+        android:id="@+id/app_list_item_titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/app_list_item_iconImageView"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="Crime title"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/app_list_item_packageTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_list_item_titleTextView"
+        android:layout_toRightOf="@id/app_list_item_iconImageView"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:text="Crime date"/>
+
+</RelativeLayout>
