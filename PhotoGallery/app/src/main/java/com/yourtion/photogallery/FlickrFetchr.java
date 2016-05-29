@@ -78,7 +78,7 @@ public class FlickrFetchr {
         } catch (XmlPullParserException xppe) {
             Log.e(TAG, "Failed to parse items", xppe);
         }
-        
+
         return items;
     }
 
