@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -43,15 +44,14 @@ public class PhotoGalleryFragment extends Fragment {
         if (getActivity() == null && mGridView == null) return;
 
         if (mItems != null) {
-            mGridView.setAdapter(new ArrayAdapter<GalleryItem>(getActivity(),
-                    android.R.layout.simple_gallery_item, mItems));
+            mGridView.setAdapter(new GalleryItemAdapter(mItems));
         } else {
             mGridView.setAdapter(null);
         }
 
     }
 
-    private class FetchItemsTask extends AsyncTask<Void,Void,ArrayList<GalleryItem>> {
+    private class FetchItemsTask extends AsyncTask<Void, Void, ArrayList<GalleryItem>> {
         @Override
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
             return new FlickrFetchr().fetchItems();
@@ -61,6 +61,24 @@ public class PhotoGalleryFragment extends Fragment {
         protected void onPostExecute(ArrayList<GalleryItem> galleryItems) {
             mItems = galleryItems;
             setupAdapter();
+        }
+    }
+
+    private class GalleryItemAdapter extends ArrayAdapter<GalleryItem> {
+        public GalleryItemAdapter(ArrayList<GalleryItem> items) {
+            super(getActivity(), 0, items);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.gallery_item, parent, false);
+            }
+
+            ImageView imageView = (ImageView) convertView;
+            imageView.setImageResource(R.drawable.brian_up_close);
+
+            return convertView;
         }
     }
 }
