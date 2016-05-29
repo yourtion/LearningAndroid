@@ -9,7 +9,7 @@
         android:id="@+id/fragment_remote_control_selectedTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_weight="2"
         android:text="0"
         android:textSize="50dp"/>
@@ -18,7 +18,7 @@
         android:id="@+id/fragment_remote_control_workingTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_margin="15dp"
         android:layout_weight="1"
         android:background="#555555"
