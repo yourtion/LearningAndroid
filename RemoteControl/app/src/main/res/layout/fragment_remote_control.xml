@@ -30,20 +30,17 @@
 
         <Button
             android:id="@+id/fragment_remote_control_zeroButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            style="@style/RemoteButton"
             android:text="0"/>
 
         <Button
             android:id="@+id/fragment_remote_control_oneButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            style="@style/RemoteButton"
             android:text="1"/>
 
         <Button
             android:id="@+id/fragment_remote_control_enterButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            style="@style/RemoteButton"
             android:text="Enter"/>
 
     </TableRow>
