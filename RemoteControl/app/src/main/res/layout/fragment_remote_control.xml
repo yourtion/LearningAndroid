@@ -39,7 +39,7 @@
         android:layout_weight="1"/>
 
     <include
-        layout="@layout/button_row"
+        layout="@layout/button_row_last"
         android:layout_weight="1"/>
 
 

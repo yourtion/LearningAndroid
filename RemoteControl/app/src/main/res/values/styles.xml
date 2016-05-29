@@ -16,4 +16,8 @@
         <item name="android:layout_margin">3dp</item>
     </style>
 
+    <style name="RemoteButton.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
