@@ -3,14 +3,15 @@
              android:id="@+id/fragment_remote_control_tableLayout"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:background="@drawable/remote_background"
              android:stretchColumns="*">
 
     <TextView
         android:id="@+id/fragment_remote_control_selectedTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
         android:layout_weight="2"
+        android:gravity="center"
         android:text="0"
         android:textSize="50dp"/>
 
@@ -18,10 +19,10 @@
         android:id="@+id/fragment_remote_control_workingTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
         android:layout_margin="15dp"
         android:layout_weight="1"
         android:background="#555555"
+        android:gravity="center"
         android:text="0"
         android:textColor="#cccccc"
         android:textSize="20dp"/>
