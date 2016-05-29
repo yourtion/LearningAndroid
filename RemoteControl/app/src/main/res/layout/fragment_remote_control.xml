@@ -26,23 +26,21 @@
         android:textColor="#cccccc"
         android:textSize="20dp"/>
 
-    <TableRow android:layout_weight="1">
+    <include
+        layout="@layout/button_row"
+        android:layout_weight="1"/>
 
-        <Button
-            android:id="@+id/fragment_remote_control_zeroButton"
-            style="@style/RemoteButton"
-            android:text="0"/>
+    <include
+        layout="@layout/button_row"
+        android:layout_weight="1"/>
 
-        <Button
-            android:id="@+id/fragment_remote_control_oneButton"
-            style="@style/RemoteButton"
-            android:text="1"/>
+    <include
+        layout="@layout/button_row"
+        android:layout_weight="1"/>
 
-        <Button
-            android:id="@+id/fragment_remote_control_enterButton"
-            style="@style/RemoteButton"
-            android:text="Enter"/>
+    <include
+        layout="@layout/button_row"
+        android:layout_weight="1"/>
 
-    </TableRow>
 
 </TableLayout>
