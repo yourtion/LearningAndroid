@@ -6,7 +6,6 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,8 +46,7 @@ public class PhotoGalleryFragment extends Fragment {
 
         updateItems();
 
-        Intent i = new Intent(getActivity(), PollService.class);
-        getActivity().startService(i);
+        PollService.setServiceAlarm(getActivity(), true);
 
         mThumbnailThread = new ThumbnailDownloader(new Handler());
         mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
@@ -169,7 +167,7 @@ public class PhotoGalleryFragment extends Fragment {
             String count = PreferenceManager
                     .getDefaultSharedPreferences(getActivity())
                     .getString(FlickrFetchr.PREF_SEARCH_QUERY_COUNT, null);
-            Toast.makeText(getActivity(),"Get " + count + " results.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Get " + count + " results.", Toast.LENGTH_SHORT).show();
             setupAdapter();
         }
     }

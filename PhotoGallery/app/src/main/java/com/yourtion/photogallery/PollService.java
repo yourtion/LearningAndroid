@@ -1,6 +1,8 @@
 package com.yourtion.photogallery;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,9 +17,30 @@ import java.util.ArrayList;
  */
 public class PollService extends IntentService {
     private static final String TAG = "PollService";
+    private static final int POLL_INTERVAL = 1000 * 15;// 15 second
 
     public PollService() {
         super(TAG);
+    }
+
+    public static boolean isServiceAlarmOn(Context context) {
+        Intent i = new Intent(context, PollService.class);
+        PendingIntent pi = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_NO_CREATE);
+        return pi != null;
+    }
+
+    public static void setServiceAlarm(Context context, boolean isOn) {
+        Intent i = new Intent(context, PollService.class);
+        PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        if (isOn) {
+            alarmManager.setRepeating(alarmManager.RTC, System.currentTimeMillis(), POLL_INTERVAL, pi);
+        } else {
+            alarmManager.cancel(pi);
+            pi.cancel();
+        }
     }
 
     @Override
