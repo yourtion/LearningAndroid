@@ -95,7 +95,12 @@ public class PhotoGalleryFragment extends Fragment {
     private class FetchItemsTask extends AsyncTask<Void, Void, ArrayList<GalleryItem>> {
         @Override
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
-            return new FlickrFetchr().fetchItems();
+            String query = "android";//Just for testing
+            if (query != null) {
+                return new FlickrFetchr().search(query);
+            } else {
+                return new FlickrFetchr().fetchItems();
+            }
         }
 
         @Override
