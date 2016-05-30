@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class FlickrFetchr {
     public static final String TAG = "FlickrFetchr";
     public static final String PREF_SEARCH_QUERY = "searchQuery";
+    public static final String PREF_SEARCH_QUERY_COUNT = "searchQueryCount";
     private static final String ENDPOINT = "https://api.flickr.com/services/rest/";
     private static final String API_KEY = "020f6c3c133b396b5560d65c9ed2dc57";
     private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
@@ -29,6 +30,12 @@ public class FlickrFetchr {
     private static final String PARAM_TEXT = "text";
     private static final String EXTRA_SMALL_URL = "url_s";
     private static final String XML_PHOTO = "photo";
+    private static final String XML_PHOTOS = "photos";
+    private static String mResultCount = null;
+
+    public String getResultCount() {
+        return mResultCount;
+    }
 
     byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
@@ -100,6 +107,9 @@ public class FlickrFetchr {
     void parseItems(ArrayList<GalleryItem> items, XmlPullParser parser) throws XmlPullParserException, IOException {
         int eventType = parser.next();
         while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_TAG && XML_PHOTOS.equals(parser.getName())) {
+                mResultCount = parser.getAttributeValue(null, "total");
+            }
             if (eventType == XmlPullParser.START_TAG && XML_PHOTO.equals(parser.getName())) {
                 String id = parser.getAttributeValue(null, "id");
                 String caption = parser.getAttributeValue(null, "title");

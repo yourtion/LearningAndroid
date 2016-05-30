@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -67,11 +68,8 @@ public class PhotoGalleryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = (View) inflater.inflate(R.layout.fragment_photo_gallery, container, false);
-
         mGridView = (GridView) v.findViewById(R.id.gridView);
-
         setupAdapter();
-
         return v;
     }
 
@@ -128,7 +126,6 @@ public class PhotoGalleryFragment extends Fragment {
         } else {
             mGridView.setAdapter(null);
         }
-
     }
 
     private void preloadThumbnail(int pos) {
@@ -150,7 +147,13 @@ public class PhotoGalleryFragment extends Fragment {
                     .getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
 
             if (query != null) {
-                return new FlickrFetchr().search(query);
+                FlickrFetchr fetchr = new FlickrFetchr();
+                ArrayList<GalleryItem> items = fetchr.search(query);
+                PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .edit()
+                        .putString(FlickrFetchr.PREF_SEARCH_QUERY_COUNT, fetchr.getResultCount())
+                        .commit();
+                return items;
             } else {
                 return new FlickrFetchr().fetchItems();
             }
@@ -159,6 +162,10 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<GalleryItem> galleryItems) {
             mItems = galleryItems;
+            String count = PreferenceManager
+                    .getDefaultSharedPreferences(getActivity())
+                    .getString(FlickrFetchr.PREF_SEARCH_QUERY_COUNT, null);
+            Toast.makeText(getActivity(),"Get " + count + " results.",Toast.LENGTH_SHORT).show();
             setupAdapter();
         }
     }
