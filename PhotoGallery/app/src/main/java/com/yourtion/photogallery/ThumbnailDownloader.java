@@ -21,13 +21,11 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
     private static final String TAG = "ThumbnailDownloader";
     private static final int MESSAGE_DOWNLOAD = 0;
     private static final int MESSAGE_PREDOWNLOAD = 1;
-
+    private static final int MEM_MAX_SIZE = 32 * 1024 * 1024;// MEM 32MB
     Handler mHandler;
     Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
     Handler mResponseHandler;
     Listener<Token> mListener;
-
-    private static final int MEM_MAX_SIZE = 10 * 1024 * 1024;// MEM 10MB
     private LruCache<String, Bitmap> mMemoryCache = null;
 
     public ThumbnailDownloader(Handler responseHandler) {
@@ -78,27 +76,37 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
     }
 
     public void queueThumbnail(Token token, String url) {
+        synchronized (mMemoryCache) {
+            final Bitmap bitmap = mMemoryCache.get(url);
+            if (bitmap != null && !bitmap.isRecycled()) {
+                mListener.onThumbnailDownloaded(token, bitmap);
+                return;
+            }
+        }
         requestMap.put(token, url);
         mHandler.obtainMessage(MESSAGE_DOWNLOAD, token).sendToTarget();
     }
 
-    private Bitmap getBitmap(String url){
+    private Bitmap getBitmap(String url) {
         if (url == null) return null;
-        Bitmap bitmap = mMemoryCache.get(url);
-        if (bitmap == null || bitmap.isRecycled()) {
-            try {
-                byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
-                bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
-                mMemoryCache.put(url,bitmap);
-                Log.i(TAG, "Created Bitmap from url: "+ url);
+        synchronized (mMemoryCache) {
+            Bitmap bitmap = mMemoryCache.get(url);
+            if (bitmap != null && !bitmap.isRecycled()) {
+                Log.i(TAG, "Get Bitmap from cache: " + url);
                 return bitmap;
-            } catch (IOException ioe) {
-                Log.e(TAG, "Error downloading image", ioe);
-                return null;
             }
-        } else{
-            Log.i(TAG, "Get Bitmap from cache: "+ url);
+        }
+        try {
+            byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+            synchronized (mMemoryCache) {
+                mMemoryCache.put(url, bitmap);
+            }
+            Log.i(TAG, "Created Bitmap from url: " + url);
             return bitmap;
+        } catch (IOException ioe) {
+            Log.e(TAG, "Error downloading image", ioe);
+            return null;
         }
     }
 

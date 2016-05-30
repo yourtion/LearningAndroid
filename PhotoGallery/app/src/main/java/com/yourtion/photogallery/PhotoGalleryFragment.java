@@ -83,6 +83,16 @@ public class PhotoGalleryFragment extends Fragment {
 
     }
 
+    private void preloadThumbnail(int pos) {
+        if (pos > 0 && pos < mItems.size() - 1) {
+            GalleryItem item = mItems.get(pos);
+            if (item != null && item.getUrl() != null) {
+                Log.e(TAG, "PRE load:" + item.getUrl());
+                mThumbnailThread.preloadThumbnail(item.getUrl());
+            }
+        }
+    }
+
     private class FetchItemsTask extends AsyncTask<Void, Void, ArrayList<GalleryItem>> {
         @Override
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
@@ -113,23 +123,8 @@ public class PhotoGalleryFragment extends Fragment {
             GalleryItem item = getItem(position);
             mThumbnailThread.queueThumbnail(imageView, item.getUrl());
 
-            int h10_p = position - 10;
-            if (h10_p > 0) {
-                GalleryItem item_h10 = mItems.get(h10_p);
-                if (item_h10 != null && item_h10.getUrl() != null) {
-                    Log.e(TAG,"PRE h10:" + item_h10.getUrl());
-                    mThumbnailThread.preloadThumbnail(item_h10.getUrl());
-                }
-            }
-
-            int b10_p = position + 10;
-            if (b10_p < mItems.size() - 1) {
-                GalleryItem item_b10 = mItems.get(b10_p);
-                if (item_b10 != null && item_b10.getUrl() != null) {
-                    Log.e(TAG,"PRE b10:" + item_b10.getUrl());
-                    mThumbnailThread.preloadThumbnail(item_b10.getUrl());
-                }
-            }
+            preloadThumbnail(position - 10);
+            preloadThumbnail(position + 10);
 
             return convertView;
         }
