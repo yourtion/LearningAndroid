@@ -46,8 +46,6 @@ public class PhotoGalleryFragment extends Fragment {
 
         updateItems();
 
-        PollService.setServiceAlarm(getActivity(), true);
-
         mThumbnailThread = new ThumbnailDownloader(new Handler());
         mThumbnailThread.setListener(new ThumbnailDownloader.Listener<ImageView>() {
             @Override
@@ -115,8 +113,25 @@ public class PhotoGalleryFragment extends Fragment {
                         .commit();
                 updateItems();
                 return true;
+            case R.id.menu_item_polling:
+                boolean shouldStartAlarm = !PollService.isServiceAlarmOn(getActivity());
+                PollService.setServiceAlarm(getActivity(), shouldStartAlarm);
+                getActivity().invalidateOptionsMenu();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem toggleItem = menu.findItem(R.id.menu_item_polling);
+        if (PollService.isServiceAlarmOn(getActivity())) {
+            toggleItem.setTitle(R.string.stop_polling);
+        } else {
+            toggleItem.setTitle(R.string.start_polling);
         }
     }
 
