@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +19,22 @@ import java.util.ArrayList;
  */
 public class PhotoGalleryFragment extends Fragment {
     private static final String TAG = "PhotoGalleryFragment";
+
     ArrayList<GalleryItem> mItems;
+    ThumbnailDownloader<ImageView> mThumbnailThread;
     private GridView mGridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setRetainInstance(true);
         new FetchItemsTask().execute();
+
+        mThumbnailThread = new ThumbnailDownloader<>();
+        mThumbnailThread.start();
+        mThumbnailThread.getLooper();
+        Log.i(TAG, "Background thread started");
     }
 
     @Nullable
@@ -38,6 +47,13 @@ public class PhotoGalleryFragment extends Fragment {
         setupAdapter();
 
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mThumbnailThread.quit();
+        Log.i(TAG, "Background thread destroyed");
     }
 
     void setupAdapter() {
@@ -77,6 +93,9 @@ public class PhotoGalleryFragment extends Fragment {
 
             ImageView imageView = (ImageView) convertView;
             imageView.setImageResource(R.drawable.brian_up_close);
+
+            GalleryItem item = getItem(position);
+            mThumbnailThread.queueThumbnail(imageView, item.getUrl());
 
             return convertView;
         }
