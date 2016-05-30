@@ -20,6 +20,7 @@ import java.util.Map;
 public class ThumbnailDownloader<Token> extends HandlerThread {
     private static final String TAG = "ThumbnailDownloader";
     private static final int MESSAGE_DOWNLOAD = 0;
+    private static final int MESSAGE_PREDOWNLOAD = 1;
 
     Handler mHandler;
     Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
@@ -49,6 +50,12 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
                     Log.i(TAG, "Got a request for url: " + requestMap.get(token));
                     handleRequest(token);
                 }
+                if (msg.what == MESSAGE_PREDOWNLOAD) {
+                    @SuppressWarnings("unchecked")
+                    String url = (String) msg.obj;
+                    Log.i(TAG, "Got a predownload request for url: " + url);
+                    getBitmap(url);
+                }
             }
         };
 
@@ -66,51 +73,54 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
         };
     }
 
-    public void queueThumbnail(Token token, String url) {
-        Log.i(TAG, "Got an URL: " + url);
-        requestMap.put(token, url);
+    public void preloadThumbnail(String url) {
+        mHandler.obtainMessage(MESSAGE_PREDOWNLOAD, url).sendToTarget();
+    }
 
+    public void queueThumbnail(Token token, String url) {
+        requestMap.put(token, url);
         mHandler.obtainMessage(MESSAGE_DOWNLOAD, token).sendToTarget();
+    }
+
+    private Bitmap getBitmap(String url){
+        if (url == null) return null;
+        Bitmap bitmap = mMemoryCache.get(url);
+        if (bitmap == null || bitmap.isRecycled()) {
+            try {
+                byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
+                bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+                mMemoryCache.put(url,bitmap);
+                Log.i(TAG, "Created Bitmap from url: "+ url);
+                return bitmap;
+            } catch (IOException ioe) {
+                Log.e(TAG, "Error downloading image", ioe);
+                return null;
+            }
+        } else{
+            Log.i(TAG, "Get Bitmap from cache: "+ url);
+            return bitmap;
+        }
     }
 
     private void handleRequest(final Token token) {
         final String url = requestMap.get(token);
         if (url == null) return;
 
-        final Bitmap cacheBitmap = mMemoryCache.get(url);
-        if (cacheBitmap != null && !cacheBitmap.isRecycled()) {
-            Log.i(TAG, "get bitmap from mem: url = " + url);
-            mResponseHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (requestMap.get(token) != url) return;
-                    requestMap.remove(token);
-                    mListener.onThumbnailDownloaded(token, cacheBitmap);
-                }
-            });
-        } else {
-            try {
-                byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);
-                final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
-                Log.i(TAG, "Bitmap created");
-
-                mResponseHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (requestMap.get(token) != url) return;
-                        requestMap.remove(token);
-                        mMemoryCache.put(url, bitmap);
-                        mListener.onThumbnailDownloaded(token, bitmap);
-                    }
-                });
-            } catch (IOException ioe) {
-                Log.e(TAG, "Error downloading image", ioe);
+        final Bitmap bitmap = getBitmap(url);
+        mResponseHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (requestMap.get(token) != url) return;
+                if (bitmap == null) return;
+                requestMap.remove(token);
+                mListener.onThumbnailDownloaded(token, bitmap);
             }
-        }
+        });
     }
 
     public void clearQueue() {
         mHandler.removeMessages(MESSAGE_DOWNLOAD);
+        mHandler.removeMessages(MESSAGE_PREDOWNLOAD);
         requestMap.clear();
     }
 
