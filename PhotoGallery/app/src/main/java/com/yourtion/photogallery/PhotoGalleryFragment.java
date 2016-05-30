@@ -87,7 +87,6 @@ public class PhotoGalleryFragment extends Fragment {
         if (pos > 0 && pos < mItems.size() - 1) {
             GalleryItem item = mItems.get(pos);
             if (item != null && item.getUrl() != null) {
-                Log.e(TAG, "PRE load:" + item.getUrl());
                 mThumbnailThread.preloadThumbnail(item.getUrl());
             }
         }
