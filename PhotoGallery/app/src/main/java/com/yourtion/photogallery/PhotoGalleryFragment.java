@@ -1,7 +1,6 @@
 package com.yourtion.photogallery;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;
@@ -30,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by Yourtion on 5/29/16.
  */
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
     private static final String TAG = "PhotoGalleryFragment";
 
     ArrayList<GalleryItem> mItems;

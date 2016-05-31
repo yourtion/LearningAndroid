@@ -20,9 +20,10 @@ import java.util.ArrayList;
  * Created by Yourtion on 5/30/16.
  */
 public class PollService extends IntentService {
+    public static final String PREF_IS_ALARM_ON = "isAlarmOn";
+    public static final String ACTION_SHOW_NOTIFICATION = "com.yourtion.photogallery.SHOW_NOTIFICATION";
     private static final String TAG = "PollService";
     private static final int POLL_INTERVAL = 1000 * 60 * 15;// 15 minute
-    public static final String PREF_IS_ALARM_ON = "isAlarmOn";
 
     public PollService() {
         super(TAG);
@@ -90,6 +91,8 @@ public class PollService extends IntentService {
                     .build();
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(0, notification);
+
+            sendBroadcast(new Intent(ACTION_SHOW_NOTIFICATION));
         } else {
             Log.i(TAG, "Got an old result: " + resultId);
         }
