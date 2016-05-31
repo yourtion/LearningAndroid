@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class PollService extends IntentService {
     private static final String TAG = "PollService";
     private static final int POLL_INTERVAL = 1000 * 60 * 15;// 15 minute
+    public static final String PREF_IS_ALARM_ON = "isAlarmOn";
 
     public PollService() {
         super(TAG);
@@ -45,6 +46,11 @@ public class PollService extends IntentService {
             alarmManager.cancel(pi);
             pi.cancel();
         }
+
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(PollService.PREF_IS_ALARM_ON, isOn)
+                .commit();
     }
 
     @Override
