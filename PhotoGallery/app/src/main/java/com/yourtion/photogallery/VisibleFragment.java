@@ -1,11 +1,12 @@
 package com.yourtion.photogallery;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.widget.Toast;
+import android.util.Log;
 
 /**
  * Created by Yourtion on 5/31/16.
@@ -16,7 +17,9 @@ public class VisibleFragment extends Fragment {
     private BroadcastReceiver mOnshowNotification = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(getActivity(), "Got a broadcast:" + intent.getAction(), Toast.LENGTH_LONG).show();
+            // If we receive this, we're visible,so cancel the notification
+            Log.i(TAG, "canceling notification");
+            setResultCode(Activity.RESULT_CANCELED);
         }
     };
 

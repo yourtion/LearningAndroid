@@ -33,9 +33,17 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <service android:name=".PollService"/>
+
         <receiver android:name=".StartupReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".NotificationReceiver"
+            android:exported="false">
+            <intent-filter android:priority="-999">
+                <action android:name="com.yourtion.photogallery.SHOW_NOTIFICATION"/>
             </intent-filter>
         </receiver>
     </application>
