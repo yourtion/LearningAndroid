@@ -10,13 +10,13 @@ import android.widget.Toast;
 /**
  * Created by Yourtion on 5/31/16.
  */
-public class VisibleFragment extends Fragment{
+public class VisibleFragment extends Fragment {
     public static final String TAG = "VisibleFragment";
 
     private BroadcastReceiver mOnshowNotification = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(getActivity(),"Got a broadcast:" + intent.getAction(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Got a broadcast:" + intent.getAction(), Toast.LENGTH_LONG).show();
         }
     };
 
@@ -24,7 +24,7 @@ public class VisibleFragment extends Fragment{
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(PollService.ACTION_SHOW_NOTIFICATION);
-        getActivity().registerReceiver(mOnshowNotification,filter);
+        getActivity().registerReceiver(mOnshowNotification, filter, PollService.PERM_PRIVATE, null);
     }
 
     @Override
