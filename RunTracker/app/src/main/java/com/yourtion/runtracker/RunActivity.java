@@ -1,13 +1,11 @@
 package com.yourtion.runtracker;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.app.Fragment;
 
-public class RunActivity extends AppCompatActivity {
+public class RunActivity extends SingleFragmentActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_run);
+    protected Fragment createFragment() {
+        return new RunFragment();
     }
 }
