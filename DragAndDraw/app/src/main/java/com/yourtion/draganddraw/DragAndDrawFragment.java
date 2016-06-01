@@ -21,13 +21,9 @@ public class DragAndDrawFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBoxes = null;
         if (savedInstanceState != null) {
-            ArrayList<Box> boxes = (ArrayList<Box>) savedInstanceState.getSerializable(KET_BOXES);
-            if (boxes != null && boxes.size() > 0) {
-                mBoxes = boxes;
-            } else {
-                mBoxes = null;
-            }
+            mBoxes = (ArrayList<Box>) savedInstanceState.getSerializable(KET_BOXES);
         }
     }
 
@@ -36,9 +32,7 @@ public class DragAndDrawFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_drag_and_draw, container, false);
         mBoxesView = (BoxDrawingView) v.findViewById(R.id.boxDrawingView);
-        if (mBoxes != null) {
-            mBoxesView.setBoxes(mBoxes);
-        }
+        mBoxesView.setBoxes(mBoxes);
         return v;
     }
 

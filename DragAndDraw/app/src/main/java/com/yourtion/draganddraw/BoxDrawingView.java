@@ -55,15 +55,13 @@ public class BoxDrawingView extends View {
 
         if (mBoxes == null) mBoxes = new ArrayList<>();
 
-        int angle = 0;
-
         for (Box box : mBoxes) {
             float left = Math.min(box.getOrigin().x, box.getCurrent().x);
             float right = Math.max(box.getOrigin().x, box.getCurrent().x);
             float top = Math.min(box.getOrigin().y, box.getCurrent().y);
             float bottom = Math.max(box.getOrigin().y, box.getCurrent().y);
 
-            angle = box.getAngle();
+            int angle = box.getAngle();
             canvas.rotate(angle, left, top);
             canvas.drawRect(left, top, right, bottom, mBoxPaint);
             canvas.rotate(-angle, left, top);
