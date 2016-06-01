@@ -22,14 +22,6 @@ public class BoxDrawingView extends View {
     private Paint mBoxPaint;
     private Paint mBackgroundPaint;
 
-    public ArrayList<Box> getBoxes() {
-        return mBoxes;
-    }
-
-    public void setBoxes(ArrayList<Box> boxes) {
-        mBoxes = boxes;
-    }
-
     // Used when creating the view in code
     public BoxDrawingView(Context context) {
         this(context, null);
@@ -48,6 +40,14 @@ public class BoxDrawingView extends View {
         mBackgroundPaint.setColor(0xfff8efe0);
     }
 
+    public ArrayList<Box> getBoxes() {
+        return mBoxes;
+    }
+
+    public void setBoxes(ArrayList<Box> boxes) {
+        mBoxes = boxes;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         // Fill the background
@@ -55,13 +55,18 @@ public class BoxDrawingView extends View {
 
         if (mBoxes == null) mBoxes = new ArrayList<>();
 
+        int angle = 0;
+
         for (Box box : mBoxes) {
             float left = Math.min(box.getOrigin().x, box.getCurrent().x);
             float right = Math.max(box.getOrigin().x, box.getCurrent().x);
             float top = Math.min(box.getOrigin().y, box.getCurrent().y);
             float bottom = Math.max(box.getOrigin().y, box.getCurrent().y);
 
+            angle = box.getAngle();
+            canvas.rotate(angle, left, top);
             canvas.drawRect(left, top, right, bottom, mBoxPaint);
+            canvas.rotate(-angle, left, top);
         }
     }
 
@@ -70,6 +75,20 @@ public class BoxDrawingView extends View {
         PointF curr = new PointF(event.getX(), event.getY());
 
         Log.i(TAG, "Received event at x=" + curr.x + ", y=" + curr.y + ":");
+
+        if (event.getPointerCount() > 2) {
+            mBoxes = null;
+            mCurrentBox = null;
+            invalidate();
+            return true;
+        }
+
+        if (event.getPointerCount() > 1) {
+            int angle = rotate(event);
+            if (mCurrentBox != null) mCurrentBox.setAngle(angle);
+            Log.i(TAG, "Multitouch event at:" + angle);
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.i(TAG, "ACTION_DOWN");
@@ -94,5 +113,12 @@ public class BoxDrawingView extends View {
                 break;
         }
         return true;
+    }
+
+    private int rotate(MotionEvent event) {
+        float deltaX = event.getX(0) - event.getX(1);
+        float deltaY = event.getY(0) - event.getY(1);
+        double radians = Math.atan(deltaY / deltaX);
+        return (int) (radians * 180 / Math.PI);
     }
 }
