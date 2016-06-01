@@ -18,9 +18,17 @@ public class BoxDrawingView extends View {
     public static final String TAG = "BoxDrawingView";
 
     private Box mCurrentBox;
-    private ArrayList<Box> mBoxes = new ArrayList<>();
+    private ArrayList<Box> mBoxes;
     private Paint mBoxPaint;
     private Paint mBackgroundPaint;
+
+    public ArrayList<Box> getBoxes() {
+        return mBoxes;
+    }
+
+    public void setBoxes(ArrayList<Box> boxes) {
+        mBoxes = boxes;
+    }
 
     // Used when creating the view in code
     public BoxDrawingView(Context context) {
@@ -44,6 +52,8 @@ public class BoxDrawingView extends View {
     protected void onDraw(Canvas canvas) {
         // Fill the background
         canvas.drawPaint(mBackgroundPaint);
+
+        if (mBoxes == null) mBoxes = new ArrayList<>();
 
         for (Box box : mBoxes) {
             float left = Math.min(box.getOrigin().x, box.getCurrent().x);
