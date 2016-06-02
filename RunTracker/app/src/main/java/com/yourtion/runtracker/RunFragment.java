@@ -22,6 +22,7 @@ import android.widget.Toast;
 public class RunFragment extends Fragment {
     private static final String ARG_RUN_ID = "RUN_ID";
     private static final int LOAD_RUN = 0;
+    private static final int LOAD_LOCATION = 1;
 
     private Button mStartButton, mStopButton;
     private TextView mStartedTextView, mLatitudeTextView, mLongitudeTextView, mAltitudeTextView, mDurationTextView;
@@ -63,7 +64,8 @@ public class RunFragment extends Fragment {
             long runId = args.getLong(ARG_RUN_ID, -1);
             if (runId != -1) {
                 LoaderManager lm = getLoaderManager();
-                lm.initLoader(LOAD_RUN, args,new RunLoaderCallbacks());
+                lm.initLoader(LOAD_RUN, args, new RunLoaderCallbacks());
+                lm.initLoader(LOAD_LOCATION,args,new LocationLoaderCallbacks());
             }
         }
     }
@@ -148,6 +150,24 @@ public class RunFragment extends Fragment {
 
         @Override
         public void onLoaderReset(Loader<Run> loader) {
+            // Do nothing
+        }
+    }
+
+    private class LocationLoaderCallbacks implements LoaderManager.LoaderCallbacks<Location> {
+        @Override
+        public Loader<Location> onCreateLoader(int id, Bundle args) {
+            return new LastLocationLoader(getActivity(), args.getLong(ARG_RUN_ID));
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Location> loader, Location data) {
+            mLastLocation = data;
+            updateUI();
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Location> loader) {
             // Do nothing
         }
     }
