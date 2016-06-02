@@ -114,7 +114,7 @@ public class RunManager {
     public RunCursor queryRuns() {
         return mHelper.queryRuns();
     }
-    
+
     private Run insertRun() {
         Run run = new Run();
         run.setId(mHelper.insertRun(run));
