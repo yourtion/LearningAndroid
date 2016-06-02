@@ -1,5 +1,6 @@
 package com.yourtion.runtracker;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -83,6 +84,7 @@ public class RunFragment extends Fragment {
                 } else {
                     mRunManager.startTrackingRun(mRun);
                 }
+                getActivity().setResult(Activity.RESULT_OK);
                 updateUI();
             }
         });
@@ -90,6 +92,7 @@ public class RunFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mRunManager.stopRun();
+                getActivity().setResult(Activity.RESULT_OK);
                 updateUI();
             }
         });

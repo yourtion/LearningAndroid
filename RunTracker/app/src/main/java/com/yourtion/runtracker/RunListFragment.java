@@ -1,9 +1,11 @@
 package com.yourtion.runtracker;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +24,8 @@ import com.yourtion.runtracker.RunDatabaseHelper.RunCursor;
  */
 public class RunListFragment extends ListFragment {
     private static final int REQUEST_NEW_RUN = 0;
+    private static final int REQUEST_OLD_RUN = 1;
+    private RunManager mRunManager;
     private RunCursor mCursor;
 
     @Override
@@ -29,9 +33,10 @@ public class RunListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         // Query the list of runs
-        mCursor = RunManager.get(getActivity()).queryRuns();
+        mRunManager = RunManager.get(getActivity());
+        mCursor = mRunManager.queryRuns();
         // Create an adapter to point at this cursor
-        RunCursorAdapter adapter = new RunCursorAdapter(getActivity(), mCursor);
+        RunCursorAdapter adapter = new RunCursorAdapter(getActivity(), mCursor, mRunManager);
         setListAdapter(adapter);
     }
 
@@ -64,12 +69,12 @@ public class RunListFragment extends ListFragment {
         // The id argument will be the Run ID; CursorAdapter gives us this for free
         Intent i = new Intent(getActivity(), RunActivity.class);
         i.putExtra(RunActivity.EXTRA_RUN_ID, id);
-        startActivity(i);
+        startActivityForResult(i, REQUEST_OLD_RUN);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (REQUEST_NEW_RUN == requestCode) {
+        if (REQUEST_NEW_RUN == requestCode || Activity.RESULT_OK == resultCode) {
             mCursor.requery();
             ((RunCursorAdapter) getListAdapter()).notifyDataSetChanged();
         }
@@ -77,9 +82,11 @@ public class RunListFragment extends ListFragment {
 
     private static class RunCursorAdapter extends CursorAdapter {
         private RunCursor mRunCursor;
+        private RunManager mRunManager;
 
-        public RunCursorAdapter(Context context, RunCursor cursor) {
+        public RunCursorAdapter(Context context, RunCursor cursor, RunManager manager) {
             super(context, cursor, 0);
+            mRunManager = manager;
             mRunCursor = cursor;
         }
 
@@ -97,6 +104,11 @@ public class RunListFragment extends ListFragment {
             // Set up the start date text view
             TextView startDateTextView = (TextView) view;
             String cellText = context.getString(R.string.cell_text, run.getStartDate());
+            if (mRunManager.isTrackingRun(run)) {
+                startDateTextView.setTextColor(Color.BLUE);
+            } else {
+                startDateTextView.setTextColor(Color.DKGRAY);
+            }
             startDateTextView.setText(cellText);
 
         }
