@@ -2,9 +2,13 @@ package com.yourtion.runtracker;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
+
+import java.util.Date;
 
 /**
  * Created by Yourtion on 6/1/16.
@@ -13,6 +17,7 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "runs.sqlite";
     private static final int VERSION = 1;
     private static final String TABLE_RUN = "run";
+    private static final String COLUMN_RUN_ID = "_id";
     private static final String COLUMN_RUN_START_DATE = "start_date";
 
     private static final String TABLE_LOCATION = "location";
@@ -58,5 +63,39 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_LOCATION_PROVIDER, location.getProvider());
         cv.put(COLUMN_LOCATION_RUN_ID, runId);
         return getWritableDatabase().insert(TABLE_LOCATION, null, cv);
+    }
+
+    public RunCursor queryRuns() {
+        // Equivalent to "select * from run order by start_date asc"
+        Cursor wrapped = getReadableDatabase().query(TABLE_RUN, null, null, null, null, null, COLUMN_RUN_START_DATE + " asc");
+        return new RunCursor(wrapped);
+    }
+
+
+    /**
+     * A convenience class to wrap a cursor that returns rows from the "run" table.
+     * The {@link getRun()} method will give you a Run instance representing
+     * the current row.
+     */
+
+    public static class RunCursor extends CursorWrapper {
+
+        public RunCursor(Cursor c) {
+            super(c);
+        }
+
+        /**
+         * Returns a Run object configured for the current row,
+         * or null if the current row is invalid.
+         */
+        public Run getRun() {
+            if (isBeforeFirst() || isAfterLast()) return null;
+            Run run = new Run();
+            long runId = getLong(getColumnIndex(COLUMN_RUN_ID));
+            run.setId(runId);
+            long startDate = getLong(getColumnIndex(COLUMN_RUN_START_DATE));
+            run.setStartDate(new Date(startDate));
+            return run;
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
+import com.yourtion.runtracker.RunDatabaseHelper.RunCursor;
 
 /**
  * Created by Yourtion on 6/1/16.
@@ -110,6 +111,10 @@ public class RunManager {
         mPrefs.edit().remove(PREF_CURRENT_RUN_ID).commit();
     }
 
+    public RunCursor queryRuns() {
+        return mHelper.queryRuns();
+    }
+    
     private Run insertRun() {
         Run run = new Run();
         run.setId(mHelper.insertRun(run));
