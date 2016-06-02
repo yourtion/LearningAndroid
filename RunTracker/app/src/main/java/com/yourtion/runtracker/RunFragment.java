@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.location.Location;
@@ -24,7 +25,7 @@ public class RunFragment extends Fragment {
     private static final int LOAD_RUN = 0;
     private static final int LOAD_LOCATION = 1;
 
-    private Button mStartButton, mStopButton;
+    private Button mStartButton, mStopButton, mMapButton;
     private TextView mStartedTextView, mLatitudeTextView, mLongitudeTextView, mAltitudeTextView, mDurationTextView;
     private RunManager mRunManager;
     private Run mRun;
@@ -65,7 +66,7 @@ public class RunFragment extends Fragment {
             if (runId != -1) {
                 LoaderManager lm = getLoaderManager();
                 lm.initLoader(LOAD_RUN, args, new RunLoaderCallbacks());
-                lm.initLoader(LOAD_LOCATION,args,new LocationLoaderCallbacks());
+                lm.initLoader(LOAD_LOCATION, args, new LocationLoaderCallbacks());
             }
         }
     }
@@ -80,6 +81,7 @@ public class RunFragment extends Fragment {
         mDurationTextView = (TextView) v.findViewById(R.id.run_durationTextView);
         mStartButton = (Button) v.findViewById(R.id.run_startButton);
         mStopButton = (Button) v.findViewById(R.id.run_stopButton);
+        mMapButton = (Button) v.findViewById(R.id.run_mapButton);
 
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +103,14 @@ public class RunFragment extends Fragment {
                 updateUI();
             }
         });
+        mMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), RunMapActivity.class);
+                i.putExtra(RunMapActivity.EXTRA_RUN_ID, mRun.getId());
+                startActivity(i);
+            }
+        });
 
         updateUI();
         return v;
@@ -117,7 +127,11 @@ public class RunFragment extends Fragment {
             durationSeconds = mRun.getDurationSeconds(mLastLocation.getTime());
             mLatitudeTextView.setText(Double.toString(mLastLocation.getLatitude()));
             mLongitudeTextView.setText(Double.toString(mLastLocation.getLongitude()));
+            mMapButton.setEnabled(true);
+        } else {
+            mMapButton.setEnabled(false);
         }
+
         mDurationTextView.setText(Run.formatDuration(durationSeconds));
 
         mStartButton.setEnabled(!started);
