@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
+
+import com.yourtion.runtracker.RunDatabaseHelper.LocationCursor;
 import com.yourtion.runtracker.RunDatabaseHelper.RunCursor;
 
 /**
@@ -88,6 +90,10 @@ public class RunManager {
         return getLocationPendingIntent(false) != null;
     }
 
+    public boolean isTrackingRun(Run run) {
+        return run != null && run.getId() == mCurrentRunId;
+    }
+
     public Run startNewRun() {
         // Insert a run into the db
         Run run = insertRun();
@@ -115,6 +121,16 @@ public class RunManager {
         return mHelper.queryRuns();
     }
 
+    public Run getRun(long id) {
+        Run run = null;
+        RunCursor cursor = mHelper.queryRun(id);
+        cursor.moveToFirst();
+        // If you got a row, get a run
+        if (!cursor.isAfterLast()) run = cursor.getRun();
+        cursor.close();
+        return run;
+    }
+
     private Run insertRun() {
         Run run = new Run();
         run.setId(mHelper.insertRun(run));
@@ -127,5 +143,15 @@ public class RunManager {
         } else {
             Log.e(TAG, "Location received with no tracking run; ignoring.");
         }
+    }
+
+    public Location getLastLocationForRun(long runId) {
+        Location location = null;
+        LocationCursor cursor = mHelper.queryLastLocationForRun(runId);
+        cursor.moveToFirst();
+        // If you got a row, get a location
+        if (!cursor.isAfterLast()) location = cursor.getLocation();
+        cursor.close();
+        return location;
     }
 }

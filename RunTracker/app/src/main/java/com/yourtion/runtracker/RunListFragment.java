@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.yourtion.runtracker.RunDatabaseHelper.RunCursor;
@@ -56,6 +57,14 @@ public class RunListFragment extends ListFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        // The id argument will be the Run ID; CursorAdapter gives us this for free
+        Intent i = new Intent(getActivity(), RunActivity.class);
+        i.putExtra(RunActivity.EXTRA_RUN_ID, id);
+        startActivity(i);
     }
 
     @Override
