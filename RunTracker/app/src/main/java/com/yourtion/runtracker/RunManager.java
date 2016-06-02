@@ -154,4 +154,8 @@ public class RunManager {
         cursor.close();
         return location;
     }
+
+    public LocationCursor queryLocationsForRun(long runId) {
+        return mHelper.queryLocationsForRun(runId);
+    }
 }
