@@ -6,9 +6,11 @@ import java.util.Date;
  * Created by Yourtion on 6/1/16.
  */
 public class Run {
+    private long mId;
     private Date mStartDate;
 
     public Run() {
+        mId = -1;
         mStartDate = new Date();
     }
 
@@ -17,6 +19,14 @@ public class Run {
         int minutes = ((durationSeconds - seconds) / 60) % 60;
         int hours = (durationSeconds - (minutes * 60) - seconds) / 3600;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
     }
 
     public Date getStartDate() {
