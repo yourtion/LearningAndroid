@@ -3,8 +3,22 @@
           package="com.yourtion.runtracker">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <permission
+        android:name="com.yourtion.runtracker.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature"/>
+
+    <uses-permission android:name="com.yourtion.runtracker.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <uses-feature
         android:name="android.hardware.location.gps"
+        android:required="true"/>
+    <uses-feature
+        android:glEsVersion="0x00020000"
         android:required="true"/>
 
     <application
@@ -31,6 +45,17 @@
                 <action android:name="com.yourtion.runtracker.ACTION_LOCATION"/>
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <activity
+            android:name=".RunMapActivity"
+            android:label="@string/title_activity_run_map">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yourtion.runtracker.RunActivity"/>
+        </activity>
     </application>
 
 </manifest>

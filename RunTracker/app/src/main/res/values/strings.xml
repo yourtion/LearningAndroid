@@ -11,4 +11,5 @@
     <string name="gps_disabled">GPS Disabled</string>
     <string name="cell_text">Run at %1$s</string>
     <string name="new_run">New Run</string>
+    <string name="title_activity_run_map">Map</string>
 </resources>
