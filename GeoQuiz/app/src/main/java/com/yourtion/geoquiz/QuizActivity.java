@@ -1,11 +1,10 @@
 package com.yourtion.geoquiz;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class QuizActivity extends AppCompatActivity {
+public class QuizActivity extends Activity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
@@ -75,7 +74,6 @@ public class QuizActivity extends AppCompatActivity {
 
     }
 
-    @TargetApi(11)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
