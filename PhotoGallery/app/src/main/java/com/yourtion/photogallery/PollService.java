@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -82,7 +81,7 @@ public class PollService extends IntentService {
             Resources r = getResources();
             PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, PhotoGalleryActivity.class), 0);
 
-            Notification notification = new NotificationCompat.Builder(this)
+            Notification notification = new Notification.Builder(this)
                     .setTicker(r.getString(R.string.new_pictures_title))
                     .setSmallIcon(android.R.drawable.ic_menu_report_image)
                     .setContentText(r.getString(R.string.new_pictures_text))

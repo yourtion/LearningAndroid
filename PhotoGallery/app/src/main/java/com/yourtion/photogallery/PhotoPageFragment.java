@@ -2,7 +2,6 @@ package com.yourtion.photogallery;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ public class PhotoPageFragment extends VisibleFragment {
         mUrl = getActivity().getIntent().getData().toString();
     }
 
-    @Nullable
     @Override
     @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
